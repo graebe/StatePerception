@@ -12,7 +12,7 @@ cd StatePerception
 ```
 
 Install the package with pip after cloning. In the 
-root directory (where `setup.cfg` and `setup.py` are) call
+root directory (where `setup.py` is located) call
 
 ```
 pip install -e .
