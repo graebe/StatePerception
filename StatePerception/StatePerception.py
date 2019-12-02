@@ -1,15 +1,15 @@
 # Dataset
-from StatePerceptionDataset import *
+from .StatePerceptionDataset import *
 
 # Keras Elements
-from StatePerceptionKerasLayer import *
+from .StatePerceptionKerasLayer import *
 
 # Models
-from StatePerceptionStandardModels import *
-from StatePerceptionModel import *
+from .StatePerceptionStandardModels import *
+from .StatePerceptionModel import *
 
 # Trainer
-from StatePerceptionTrainer import *
+from .StatePerceptionTrainer import *
 
 # Model Analysis
-from StatePerceptionModelAnalysis import *
+from .StatePerceptionModelAnalysis import *

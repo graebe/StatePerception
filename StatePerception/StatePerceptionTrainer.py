@@ -11,8 +11,8 @@ import GPyOpt
 from keras.callbacks import ModelCheckpoint
 
 # Custom Imports
-from StatePerceptionHelperFunctions import ensure_dir, get_color_setup
-from StatePerceptionHelperFunctions import save_pickle_file, load_pickle_file
+from .StatePerceptionHelperFunctions import ensure_dir, get_color_setup
+from .StatePerceptionHelperFunctions import save_pickle_file, load_pickle_file
 
 # Function and Class Definitions
 class SPModelTrainer():

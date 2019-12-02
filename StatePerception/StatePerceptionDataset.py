@@ -39,7 +39,7 @@ import matplotlib.pyplot as plt
 from keras.utils.data_utils import Sequence
 from sklearn.preprocessing import StandardScaler
 
-from StatePerceptionHelperFunctions import save_pickle_file, load_pickle_file, ensure_dir
+from .StatePerceptionHelperFunctions import save_pickle_file, load_pickle_file, ensure_dir
 
 # Function and Class Definitions
 class SPDataset():
