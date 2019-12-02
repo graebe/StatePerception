@@ -14,4 +14,4 @@ from .Trainer import SPModelTrainer
 from .Trainer import SPTrainingHistory
 
 # Model Analysis
-from .ModelAnalysis import *
+from .ModelAnalysis import SPSensitivityAnalyzer
