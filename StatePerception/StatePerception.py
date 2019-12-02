@@ -1,15 +1,17 @@
 # Dataset
-from .StatePerceptionDataset import *
+from .Dataset import SPDataset
+from .Dataset import SPDatasetPlotter
 
 # Keras Elements
-from .StatePerceptionKerasLayer import *
+from .KerasLayer import *
 
 # Models
-from .StatePerceptionStandardModels import *
-from .StatePerceptionModel import *
+from .StandardModels import *
+from .Model import *
 
 # Trainer
-from .StatePerceptionTrainer import *
+from .Trainer import SPModelTrainer
+from .Trainer import SPTrainingHistory
 
 # Model Analysis
-from .StatePerceptionModelAnalysis import *
+from .ModelAnalysis import *
