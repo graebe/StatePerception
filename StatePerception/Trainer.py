@@ -14,6 +14,7 @@ from keras.callbacks import ModelCheckpoint
 from .HelperFunctions import ensure_dir, get_color_setup
 from .HelperFunctions import save_pickle_file, load_pickle_file
 
+
 # Function and Class Definitions
 class SPModelTrainer():
     '''
@@ -21,21 +22,21 @@ class SPModelTrainer():
     Hyperparameter Optimization with GPyOpt
     Fit, Error and other Evaluation Plots
     '''
-    def __init__(self,SPModel,SPDataset,name=None):
+    def __init__(self, SPModel, SPDataset, name=None):
         self.name = name
         self.SPModel = SPModel
         self.SPDataset = SPDataset
         self.training_history = SPTrainingHistory()
-        
-    def save_training_history(self,savename=None):
-        savename = savename if savename else self.name +'/'+ 'SPOptHist.pkl'
+
+    def save_training_history(self, savename=None):
+        savename = savename if savename else self.name + '/' + 'SPOptHist.pkl'
         savelist = [self.training_history]
-        save_pickle_file(savename,savelist)
-    
-    def load_training_history(self,savename=None):
-        savename = savename if savename else self.name +'/'+ 'SPOptHist.pkl'
+        save_pickle_file(savename, savelist)
+
+    def load_training_history(self, savename=None):
+        savename = savename if savename else self.name + '/' + 'SPOptHist.pkl'
         [self.training_history] = load_pickle_file(savename)
-    
+
     def fit_model(self,timesteps=None,shift=None,batch_size=None,set_measurement_transition_invalid=False,discard_invalid=False,**fit_args):
         # Get Training Data
         X_train, Y_train, I_train = self.SPDataset.get_3D_data(dataset='train',

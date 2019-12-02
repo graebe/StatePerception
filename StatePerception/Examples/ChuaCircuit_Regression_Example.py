@@ -69,8 +69,9 @@ sptrainer = SPModelTrainer(spmodel, spdata)
 # Fit Neural Network
 sptrainer.fit_model(timesteps=100,
                     batch_size=128,
-                    epochs=1000,
-                    discard_invalid='last timestep')
+                    epochs=10000,
+                    discard_invalid='last timestep',
+                    zero_inval_Y=True)
 
 # Show Training Curves
 sptrainer.show_training_curves('loss')
