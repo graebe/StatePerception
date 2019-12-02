@@ -15,8 +15,8 @@ from keras import backend as K
 import numpy as np
 
 # Custom Imports
-from .StatePerceptionModel import SPModel
-from .StatePerceptionKerasLayer import mean_squared_error_convtime100, DerivativeLayer, mse_conv100_w2, BetaFromVyVx, ConstantNormalizationLayer
+from .Model import SPModel
+from .KerasLayer import mean_squared_error_convtime100, DerivativeLayer, mse_conv100_w2, BetaFromVyVx, ConstantNormalizationLayer
 
 #class SP_SSE_Gra18(SPModel):
 #    

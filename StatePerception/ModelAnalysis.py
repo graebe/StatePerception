@@ -5,8 +5,8 @@
 # Imports
 import numpy as np
 import matplotlib.pyplot as plt
-from .StatePerceptionHelperFunctions import get_color_setup_3_colours
-from .StatePerceptionHelperFunctions import ensure_dir
+from .HelperFunctions import get_color_setup_3_colours
+from .HelperFunctions import ensure_dir
 
 # Keras and Tensorflow Imports
 from keras import backend as K

@@ -16,8 +16,8 @@ from tensorflow.python.platform import gfile
 from tensorflow.python.framework.graph_util import convert_variables_to_constants
 
 # Custom Imports
-from .StatePerceptionKerasLayer import CustomFunctionsLib
-from .StatePerceptionHelperFunctions import save_pickle_file, load_pickle_file
+from .KerasLayer import CustomFunctionsLib
+from .HelperFunctions import save_pickle_file, load_pickle_file
 
 
 # Function and Class Definitions
