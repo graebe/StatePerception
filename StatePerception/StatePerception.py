@@ -15,3 +15,4 @@ from .Trainer import SPTrainingHistory
 
 # Model Analysis
 from .ModelAnalysis import SPSensitivityAnalyzer
+from .ModelAnalysis import SPConvergenceAnalysis
