@@ -114,6 +114,8 @@ class SPModelTrainer():
                                              indices=indices,
                                              seq2seq_prediction=self.SPModel.seq2seq_prediction,
                                              zero_inval_Y=zero_inval_Y)
+        # All Valid for Vizualization
+        I = [np.ones_like(I[0])] if not(zero_inval_Y) else I
         # Predict
         print('Predicting ...')
         if model==0:
