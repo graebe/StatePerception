@@ -1,6 +1,16 @@
-StatePerception
+### StatePerception
 
-### Package Installation
+Choose between user installation or developer installation
+
+### User Installation
+
+Installation with pip
+
+```
+pip install StatePerception
+```
+
+### Developer Package Installation
 
 We recommend using Python 3.
 
