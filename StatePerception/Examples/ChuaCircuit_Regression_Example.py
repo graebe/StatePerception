@@ -70,8 +70,7 @@ sptrainer = SPModelTrainer(spmodel, spdata)
 sptrainer.fit_model(timesteps=100,
                     batch_size=128,
                     epochs=10000,
-                    discard_invalid='last timestep',
-                    zero_inval_Y=True)
+                    discard_invalid='last timestep')
 
 # Show Training Curves
 sptrainer.show_training_curves('loss')
@@ -82,3 +81,6 @@ sptrainer.show_fit(dataset='val', timesteps=100)
 
 # Show Error Plots
 sptrainer.show_error_plot(timesteps=100)
+
+# Freeze Model for Later Deployment
+spmodel.freeze_model(savename='chua_circuit_freeze',savepath='frozen_model/')

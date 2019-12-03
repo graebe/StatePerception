@@ -36,7 +36,7 @@ class SPModel():
     General Class for SPModel holding the basis functionality for prediction,
     evaluation, saving and loading models.
     '''
-    def __init__(self,n_features=None,n_outputs=None,request_scaled_X=True,request_scaled_Y=True,seq2seq_prediction=True,name=None,custom_objects={},settings={'opt':Adam},settings_opt={},settings_init={},additional_fit_args={},num_gpus=None):
+    def __init__(self,n_features=None,n_outputs=None,request_scaled_X=True,request_scaled_Y=True,scales_X=None,means_X=None,scale_Y=None,means_Y=None,seq2seq_prediction=True,name=None,custom_objects={},settings={'opt':Adam},settings_opt={},settings_init={},additional_fit_args={},num_gpus=None):
         # Name
         self.name = name
         # Dimensions
@@ -45,6 +45,10 @@ class SPModel():
         # Data Scaled / Unscaled
         self.request_scaled_X = request_scaled_X
         self.request_scaled_Y = request_scaled_Y
+        self.scales_X_ = scales_X
+        self.means_X_ = means_X
+        self.scales_Y_ = scales_X
+        self.means_Y_ = means_X
         # Model Type: Sequence2Sequence or Sequence2SinglePrediction
         self.seq2seq_prediction = seq2seq_prediction
         # Optimization Settings
@@ -181,7 +185,7 @@ class SPModel():
                                                           output_names, freeze_var_names)
             return frozen_graph
     
-    def freeze_model(self,savename='frozen_model',savepath='frozen_model/',model_indice_for_inference=1,save_additional_readable_graph=False):
+    def freeze_model(self,savename='frozen_model',savepath='frozen_model/',model_indice_for_inference=1,save_additional_readable_graph=False,save_scaling=True):
         # Get Model
         model = self.models[model_indice_for_inference]
         # Get Model Meta Data
@@ -233,6 +237,9 @@ class SPModel():
 class SPFrozenModel():
     
     def __init__(self):
+        # File Info
+        self.savename = None
+        self.savepath = None
         # Model Info
         self.input_names = None
         self.input_shapes = None
@@ -250,7 +257,7 @@ class SPFrozenModel():
         self.sess = tf.Session()
         # Get Graph Def
         self.graph_def = tf.GraphDef()
-        with gfile.FastGFile('frozen_model/frozen_model.pb','rb') as f:
+        with gfile.FastGFile(self.savepath + self.savename + '.pb','rb') as f:
             self.graph_def.ParseFromString(f.read())
             self.sess.graph.as_default()
             tf.import_graph_def(self.graph_def,name='frozen_graph')
@@ -265,6 +272,9 @@ class SPFrozenModel():
         self.output_tensors = [self.sess.graph.get_tensor_by_name('frozen_graph/'+name+':0') for name in self.output_names]
         
     def load_frozen_model(self,savename='frozen_model',savepath='frozen_model/'):
+        # Write Info
+        self.savename = savename
+        self.savepath = savepath
         # Load Frozen Model
         [self.input_names,self.input_shapes,self.output_names,self.output_shapes] = load_pickle_file(savename=savepath+savename+'.pkl')
         # Init Frozen Model
