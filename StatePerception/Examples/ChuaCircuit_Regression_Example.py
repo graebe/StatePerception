@@ -61,7 +61,12 @@ spp.plot_heatmap(tensor_axis_1=['X', 0],
                  bins=(100, 100))
 
 # Neural Network for Regression
-spmodel = SP_WindowedFeedForward(n_features=[3], n_outputs=[1])
+spmodel = SP_WindowedFeedForward(n_features=[3],
+                                 n_outputs=[1],
+                                 scales_X=spdata.X_scale,
+                                 means_X=spdata.X_mean,
+                                 scales_Y=spdata.Y_scale,
+                                 means_Y=spdata.Y_mean)
 
 # Trainer for Neual Network
 sptrainer = SPModelTrainer(spmodel, spdata)

@@ -36,7 +36,23 @@ class SPModel():
     General Class for SPModel holding the basis functionality for prediction,
     evaluation, saving and loading models.
     '''
-    def __init__(self,n_features=None,n_outputs=None,request_scaled_X=True,request_scaled_Y=True,scales_X=None,means_X=None,scale_Y=None,means_Y=None,seq2seq_prediction=True,name=None,custom_objects={},settings={'opt':Adam},settings_opt={},settings_init={},additional_fit_args={},num_gpus=None):
+    def __init__(self,
+                 n_features=None,
+                 n_outputs=None,
+                 request_scaled_X=True,
+                 request_scaled_Y=True,
+                 scales_X=None,
+                 means_X=None,
+                 scales_Y=None,
+                 means_Y=None,
+                 seq2seq_prediction=True,
+                 name=None,
+                 custom_objects={},
+                 settings={'opt':Adam},
+                 settings_opt={},
+                 settings_init={},
+                 additional_fit_args={},
+                 num_gpus=None):
         # Name
         self.name = name
         # Dimensions

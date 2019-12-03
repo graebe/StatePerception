@@ -65,7 +65,9 @@ spp.plot_heatmap(tensor_axis_1=['X', 0],
 spmodel = SP_WindowedFeedForward_Classifier(n_features=spdata.n_features,
                                             n_outputs=spdata.n_outputs,
                                             scales_X=spdata.X_scale,
-                                            means_X=spdata.X_mean
+                                            means_X=spdata.X_mean,
+                                            scales_Y=None,
+                                            means_Y=None
                                             )
 
 # Trainer for Neual Network

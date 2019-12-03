@@ -236,35 +236,31 @@ class SP_SSE_Gra18_ActReg_InitState_WeightedLoss_AddOutputBeta(SPModel):
 
 class SP_WindowedFeedForward(SPModel):
     
-    def __init__(self,n_features,n_outputs,name='SSE_WindowedFF',request_scaled_X=True,request_scaled_Y=True,data_scales=None,seq2seq_prediction=False,settings={'loss':['mse'],'metrics':['mse'],'opt':Adam,'window_length':100,'n_dense':50,'activation':'relu','drop_in':0,'drop':0,'l1_reg':0.0001},settings_opt={'lr':0.001},settings_init=None,additional_fit_args={},custom_objects=None,num_gpus=None):
-        # Init Super
-        super().__init__(n_features=n_features,n_outputs=n_outputs,request_scaled_X=request_scaled_X,request_scaled_Y=request_scaled_Y,seq2seq_prediction=seq2seq_prediction,name=name,custom_objects=custom_objects,settings=settings,settings_opt=settings_opt,settings_init=settings_init,num_gpus=num_gpus,additional_fit_args=additional_fit_args)
-        # Model
-        self.model_inputs_outputs = self.build_graph(settings)
-        self.models, self.models_gpu = self.build_models()
-        
-    def build_graph(self,settings):
-        # Inputs
-        inputs_X = Input(batch_shape=(None,self.settings['window_length'],self.n_features[0]))
-        inputs_I = Input(batch_shape=(None,1,1))
-        # Keras Core Model
-        inputs_flat = Flatten()(inputs_X)
-        inputs_drop = Dropout(settings['drop_in'])(inputs_flat)
-        l = Dense(settings['n_dense'],activation=settings['activation'],kernel_regularizer=regularizers.l1(settings['l1_reg']))(inputs_drop)
-        l_drop = Dropout(settings['drop'])(l)
-        prediction = Dense(self.n_outputs[0],activation='linear',kernel_regularizer=regularizers.l1(settings['l1_reg']))(l_drop)
-        # Multiply Invalid Data Points with Zero
-        prediction_valid = Multiply()([prediction,inputs_I])
-        # Return Tensors
-        Inputs0=[inputs_X,inputs_I]
-        Outputs0=[prediction_valid]
-        Inputs1=[inputs_X]
-        Outputs1=[prediction]
-        return [[Inputs0,Outputs0],[Inputs1,Outputs1]]
-
-class SP_WindowedFeedForward_Classifier(SPModel):
-    
-    def __init__(self,n_features,n_outputs,name='SSE_WindowedFF_Class',request_scaled_X=False,request_scaled_Y=False,scales_X=None,means_X=None,scale_Y=None,means_Y=None,seq2seq_prediction=False,settings={'loss':['categorical_crossentropy'],'metrics':['categorical_crossentropy'],'opt':Adam,'window_length':100,'n_dense':[50],'activation':'relu','drop_in':0,'drop':0,'l1_reg':0.0001},settings_opt={'lr':0.001},settings_init=None,additional_fit_args={},custom_objects=None,num_gpus=None):
+    def __init__(self,
+                 n_features,
+                 n_outputs,
+                 name='SSE_WindowedFF',
+                 request_scaled_X=True,
+                 request_scaled_Y=True,
+                 scales_X=None,
+                 means_X=None,
+                 scales_Y=None,
+                 means_Y=None,
+                 seq2seq_prediction=False,
+                 settings={'loss':['mse'],
+                           'metrics':['mse'],
+                           'opt':Adam,
+                           'window_length':100,
+                           'n_dense':[50],
+                           'activation':'relu',
+                           'drop_in':0,
+                           'drop':0,
+                           'l1_reg':0.0001},
+                 settings_opt={'lr':0.001},
+                 settings_init=None,
+                 additional_fit_args={},
+                 custom_objects=None,
+                 num_gpus=None):
         # Init Super
         super().__init__(n_features=n_features,
                          n_outputs=n_outputs,
@@ -272,7 +268,7 @@ class SP_WindowedFeedForward_Classifier(SPModel):
                          request_scaled_Y=request_scaled_Y,
                          scales_X=scales_X,
                          means_X=means_X,
-                         scale_Y=scale_Y,
+                         scales_Y=scales_Y,
                          means_Y=means_Y,
                          seq2seq_prediction=seq2seq_prediction,
                          name=name,
@@ -288,19 +284,113 @@ class SP_WindowedFeedForward_Classifier(SPModel):
         
     def build_graph(self,settings):
         # Inputs
-        inputs_X = Input(batch_shape=(None,self.settings['window_length'],self.n_features[0]))
+        inputs_X = Input(batch_shape=(None,
+                                      self.settings['window_length'],
+                                      self.n_features[0]))
         inputs_I = Input(batch_shape=(None,1,1))
         # Normalization and Flatten
         if self.request_scaled_X is False and self.scales_X_:
-            inputs_X_scaled = ConstantNormalizationLayer(scale=self.scales_X_[0],mean=self.means_X_[0],position='input')(inputs_X)
+            inputs_X_scaled = ConstantNormalizationLayer(scale=self.scales_X_[0],
+                                                         mean=self.means_X_[0],
+                                                         position='input')(inputs_X)
             inputs_flat = Flatten()(inputs_X_scaled)
         else:
             inputs_flat = Flatten()(inputs_X)
         l_drop = Dropout(settings['drop_in'])(inputs_flat)
         for n_dense in settings['n_dense']:
-            l = Dense(n_dense,activation=settings['activation'],kernel_regularizer=regularizers.l1(settings['l1_reg']))(l_drop)
+            l = Dense(n_dense,
+                      activation=settings['activation'],
+                      kernel_regularizer=regularizers.l1(settings['l1_reg']))(l_drop)
             l_drop = Dropout(settings['drop'])(l)
-        prediction = Dense(self.n_outputs[0],activation='linear',kernel_regularizer=regularizers.l1(settings['l1_reg']))(l_drop)
+        prediction = Dense(self.n_outputs[0],
+                           activation='linear',
+                           kernel_regularizer=regularizers.l1(settings['l1_reg']))(l_drop)
+        # De-Normalization
+        if self.request_scaled_Y is False and self.scales_Y_:
+            prediction = ConstantNormalizationLayer(scale=self.scales_Y_[0],
+                                                         mean=self.means_Y_[0],
+                                                         position='output')(prediction)
+        # Multiply Invalid Data Points with Zero
+        prediction_valid = Multiply()([prediction,inputs_I])
+        # Return Tensors
+        Inputs0=[inputs_X,inputs_I]
+        Outputs0=[prediction_valid]
+        Inputs1=[inputs_X]
+        Outputs1=[prediction]
+        return [[Inputs0,Outputs0],[Inputs1,Outputs1]]
+
+
+class SP_WindowedFeedForward_Classifier(SPModel):
+    
+    def __init__(self,
+                 n_features,
+                 n_outputs,
+                 name='SSE_WindowedFF_Class',
+                 request_scaled_X=False,
+                 request_scaled_Y=False,
+                 scales_X=None,
+                 means_X=None,
+                 scales_Y=None,
+                 means_Y=None,
+                 seq2seq_prediction=False,
+                 settings={'loss':['categorical_crossentropy'],
+                           'metrics':['categorical_crossentropy'],
+                           'opt':Adam,
+                           'window_length':100,
+                           'n_dense':[50],
+                           'activation':'relu',
+                           'drop_in':0,
+                           'drop':0,
+                           'l1_reg':0.0001},
+                settings_opt={'lr':0.001},
+                settings_init=None,
+                additional_fit_args={},
+                custom_objects=None,
+                num_gpus=None):
+        # Init Super
+        super().__init__(n_features=n_features,
+                         n_outputs=n_outputs,
+                         request_scaled_X=request_scaled_X,
+                         request_scaled_Y=request_scaled_Y,
+                         scales_X=scales_X,
+                         means_X=means_X,
+                         scales_Y=scales_Y,
+                         means_Y=means_Y,
+                         seq2seq_prediction=seq2seq_prediction,
+                         name=name,
+                         custom_objects=custom_objects,
+                         settings=settings,
+                         settings_opt=settings_opt,
+                         settings_init=settings_init,
+                         num_gpus=num_gpus,
+                         additional_fit_args=additional_fit_args)
+        # Model
+        self.model_inputs_outputs = self.build_graph(settings)
+        self.models, self.models_gpu = self.build_models()
+        
+    def build_graph(self,settings):
+        # Inputs
+        inputs_X = Input(batch_shape=(None,
+                                      self.settings['window_length'],
+                                      self.n_features[0]))
+        inputs_I = Input(batch_shape=(None,1,1))
+        # Normalization and Flatten
+        if self.request_scaled_X is False and self.scales_X_:
+            inputs_X_scaled = ConstantNormalizationLayer(scale=self.scales_X_[0],
+                                                         mean=self.means_X_[0],
+                                                         position='input')(inputs_X)
+            inputs_flat = Flatten()(inputs_X_scaled)
+        else:
+            inputs_flat = Flatten()(inputs_X)
+        l_drop = Dropout(settings['drop_in'])(inputs_flat)
+        for n_dense in settings['n_dense']:
+            l = Dense(n_dense,
+                      activation=settings['activation'],
+                      kernel_regularizer=regularizers.l1(settings['l1_reg']))(l_drop)
+            l_drop = Dropout(settings['drop'])(l)
+        prediction = Dense(self.n_outputs[0],
+                           activation='linear',
+                           kernel_regularizer=regularizers.l1(settings['l1_reg']))(l_drop)
         prediction = Softmax()(prediction)
         # Multiply Invalid Data Points with Zero
         #inputs_I = Flatten()(inputs_I)
