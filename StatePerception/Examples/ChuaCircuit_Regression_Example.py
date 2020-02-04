@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov 25 16:06:00 2019
-
-@author: Torben Gräber
-"""
-
 # Imports
 from chua_circuit import chua_circuit
 import numpy as np
