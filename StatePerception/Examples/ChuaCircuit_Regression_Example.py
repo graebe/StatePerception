@@ -2,7 +2,7 @@
 """
 Created on Mon Nov 25 16:06:00 2019
 
-@author: P355139
+@author: Torben Gräber
 """
 
 # Imports
