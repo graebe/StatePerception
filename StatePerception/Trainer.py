@@ -219,9 +219,31 @@ class SPModelTrainer():
             Y_signal_names = []
             for name in self.SPDataset.Y_signal_names:
                 Y_signal_names = Y_signal_names + name
+            print(Y_curr.shape)
+            print(y_pred_curr.shape)
+            error_curr = Y_curr - y_pred_curr
             plt.figure()
-            sp = plt.subplot(Y_curr.shape[2],1,1)
-    
+            sp = plt.subplot(error_curr.shape[2],1,1)
+            for i in range(error_curr.shape[2]):
+                if i>0:
+                    plt.subplot(error_curr.shape[2],1,i+1,sharex=sp)
+                if timesteps is None:
+                    t = np.arange(0,np.int(np.ceil(n/downsample)))*dt*downsample
+                    plt.plot(t,error_curr[0,::downsample,i],label=Y_signal_names[i])
+                else:
+                    t = np.arange(0,np.int(np.ceil(error_curr.shape[0]/downsample)))*dt*downsample
+                    plt.plot(t,error_curr[::downsample,-1,i],label=Y_signal_names[i])
+                plt.ylabel('Output')
+                if self.SPDataset.Y_signal_names is not(None):
+                    plt.legend()
+                if self.SPDataset.dt is not(None):
+                    plt.xlabel('Time t [s]')
+                else:
+                    plt.xlabel('Timestep k')
+                plt.title('Error Plot - Data Set: ' + dataset)
+                plt.grid()
+                
+                
     def show_training_curves(self,metric=0):
         keys = self.training_history.get_history_keys()
         if len(keys)==0:
